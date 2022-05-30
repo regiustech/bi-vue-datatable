@@ -58,11 +58,9 @@ export default {
                 data: this.value,
                 meta: this.meta,
             };
+            props[this.event] = this.handler;
             return createElement(this.comp,{
                 props,
-                on: {
-                    [this.event]: this.handler
-                },
                 attrs: {
                     classes: this.classes
                 },

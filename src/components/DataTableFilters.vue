@@ -35,32 +35,32 @@ export default {
         },
     },
     computed: {
-        containerClasses() {
+        containerClasses(){
             return  {
                 "mb-3": true,
                 "row": this.framework === "bootstrap",
                 "flex flex-wrap justify-between": this.framework === "tailwind"
             }
         },
-        firstHalfClasses() {
+        firstHalfClasses(){
             return  {
                 "col-md-3": this.framework === "bootstrap",
                 "w-1/4" : this.framework === "tailwind"
             }
         },
-        secondHalfClasses() {
+        secondHalfClasses(){
             return  {
                 "col-md-3 offset-md-6": this.framework === "bootstrap",
                 "w-1/4 ": this.framework === "tailwind"
             }
         },
-        inputClasses() {
+        inputClasses(){
             return  {
                 "form-control": this.framework === "bootstrap",
                 "w-full px-4 py-2 focus:bg-gray-300 max-w-full focus:outline-none border border-gray-200 rounded text-gray-700": this.framework === "tailwind"
             }
         },
-        selectClasses() {
+        selectClasses(){
             return  {
                 "form-control": this.framework === "bootstrap",
                 "w-full px-4 py-2 focus:bg-gray-300 max-w-full focus:outline-none border border-gray-200 rounded text-gray-700": this.framework === "tailwind"

@@ -45,8 +45,7 @@ import OrderDirValidator from "../validators/data-table-order-dir";
 export default {
     data() {
         return {
-            currentSort: '',
-            search: [],
+            currentSort: ''
         };
     },
     props: {

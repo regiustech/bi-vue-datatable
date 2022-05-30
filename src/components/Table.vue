@@ -1,11 +1,8 @@
 <template>
     <div :class="tableContainerClasses">
         <table :class="tableClasses" class="bi-vue-datatable">
-            <slot
-                name="header">
-                <thead
-                    :class="tableHeaderClasses"
-                    class="bi-vue-datatable-thead">
+            <slot name="header">
+                <thead :class="tableHeaderClasses" class="bi-vue-datatable-thead">
                     <tr :class="tableRowClasses" class="bi-vue-datatable-thead-tr">
                         <bi-vue-data-table-th
                             :dir="dir"
@@ -20,8 +17,7 @@
                     </tr>
                 </thead>
             </slot>
-            <slot name="body">
-            </slot>
+            <slot name="body"></slot>
         </table>
     </div>
 </template>

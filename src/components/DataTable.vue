@@ -37,7 +37,7 @@
             </template>
             <template slot="body" v-else>
                 <tbody v-if="columns" :class="getClasses['t-body']" class="bi-vue-datatable-tbody">
-                    <tr v-if="!tableData.data.length">
+                    <tr v-if="(!tableData || !tableData.data || !tableData.data.length)">
                         <td :colspan="columns.length">No record found.</td>
                     </tr>
                     <tr 
@@ -72,7 +72,7 @@
         </bi-vue-table>
         <slot :page="page" name="pagination" :meta="tableData.meta" :links="tableData.links" :loadDiffrentPage="loadDiffrentPage">
             <tailable-pagination
-                v-if="tableData.data.length"
+                v-if="(tableData && tableData.data && tableData.data.length)"
                 :data="tableData"
                 :showNumbers="true"
                 :framework="framework"
