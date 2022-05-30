@@ -10,6 +10,7 @@
                         <bi-vue-data-table-th
                             :dir="dir"
                             @sort="sort"
+                            @search="columnSearchText"
                             :column="column"
                             :key="column.name"
                             v-for="column in columns"
@@ -24,12 +25,9 @@
         </table>
     </div>
 </template>
-
 <script>
-
 import BiVueDataTableTh from './DataTableTh';
 import MergeClasses from "../functions/MergeClasses";
-
 export default {
     data() {
         return {
@@ -74,17 +72,20 @@ export default {
         },
     },
     methods: {
-        headerClasses(column) {
+        headerClasses(column){
             return MergeClasses(
                 this.tableHeadClasses,
                 {"table-header-sorting": column.orderable},
                 (column.columnClasses || {}).thead || {}
             );
         },
-        sort(column) {
+        sort(column){
             this.currentSortColumn = column.name;
             this.$emit('sort', column.name, column.columnName);
         },
-    },
+        columnSearchText(search,column){
+            this.$emit('search',search,column);
+        }
+    }
 }
 </script>

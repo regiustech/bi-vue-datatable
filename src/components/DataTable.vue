@@ -19,7 +19,7 @@
         </slot>
         <bi-vue-table
             @sort="sortBy"
-            @search="searchText"
+            @search="columnSearchText"
             :sortKey="sortKey"
             :columns="columns"
             :dir="tableProps.dir"
@@ -38,10 +38,20 @@
             <template slot="body" v-else>
                 <tbody v-if="columns" :class="getClasses['t-body']" class="bi-vue-datatable-tbody">
                     <tr v-if="!tableData.data.length">
-                        <td :colspan="columns.length"></td>
+                        <td :colspan="columns.length">No record found.</td>
                     </tr>
-                    <tr v-else :key="item.id" :class="getClasses['t-body-tr']" v-for="(item,rowIndex) in tableData.data" @click="$emit('row-clicked',item)" class="bi-vue-datatable-tbody-tr">
-                        <td :key="column.name" class="bi-vue-datatable-td" :class="bodyCellClasses(column)" v-for="(column, columnIndex) in columns">
+                    <tr 
+                        v-else 
+                        :key="item.id" 
+                        :class="getClasses['t-body-tr']" 
+                        v-for="(item,rowIndex) in tableData.data" 
+                        @click="$emit('row-clicked',item)" 
+                        class="bi-vue-datatable-tbody-tr">
+                        <td 
+                            :key="column.name" 
+                            class="bi-vue-datatable-td" 
+                            :class="bodyCellClasses(column)" 
+                            v-for="(column, columnIndex) in columns">
                             <bi-vue-data-table-cell
                                 :row="rowIndex"
                                 :column="columnIndex"
@@ -62,6 +72,7 @@
         </bi-vue-table>
         <slot :page="page" name="pagination" :meta="tableData.meta" :links="tableData.links" :loadDiffrentPage="loadDiffrentPage">
             <tailable-pagination
+                v-if="tableData.data.length"
                 :data="tableData"
                 :showNumbers="true"
                 :framework="framework"
@@ -99,6 +110,7 @@ export default {
             sortOrders: {},
             draw: 0,
             page: 1,
+            searchs: [],
             tableProps: {
                 search: '',
                 dir: this.orderDir,
@@ -178,8 +190,21 @@ export default {
             this.tableProps.column = columnName ? columnName : key;
             this.tableProps.dir = this.sortOrders[key] === 1 ? 'desc' : 'asc';
         },
-        searchText(search = null){
-            this.tableProps.search = search;
+        columnSearchText(search,column){
+            this.searchs[column] = search;
+            var txt = '';
+            for(var key in this.searchs){
+                var value = this.searchs[key];
+                if(value){
+                    txt += `${key}=${value}|`;
+                }
+            }
+            if(txt){
+                txt = txt.slice(0,-1);
+            }
+            this.tableProps[column] = search;
+            this.tableProps.search = txt;
+            this.tableProps.page = 1;
         },
         getIndex(array,key,value){
             return array.findIndex(i => i[key] == value);
@@ -218,7 +243,6 @@ export default {
             );
         }
     },
-    
     computed: {
         bodySlot(){
             if(this.$scopedSlots){
