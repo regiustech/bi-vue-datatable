@@ -6,7 +6,7 @@
         class="bi-vue-datatable-th"
         :style="'width: ' + column.width + '%'">
         <div class="bi-vue-short-wrap" @click="column.orderable  ? sort(column) : null">
-            <div style="display: inline-block;" v-if="column.orderable">
+            <div style="display:inline-block;padding-right:10px" v-if="column.orderable">
                 <div
                     class="filter-asc"
                     style="
@@ -88,7 +88,7 @@ export default {
             this.currentSort = columnName;
         },
         getSearchText(column){
-            var search = document.getElementsByName('search_'+column).length ? document.getElementsByName('search_'+column)[0].value : '';
+            var search = ((document.getElementsByName('search_'+column) && document.getElementsByName('search_'+column).length) ? document.getElementsByName('search_'+column)[0].value : '');
             this.$emit('search',search,column);
         }
     },

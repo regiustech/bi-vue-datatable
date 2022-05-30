@@ -228,7 +228,7 @@ export default {
         },
         paginationChangePage(page){
             this.page = page;
-            if(Object.keys(this.data).length){
+            if(Object.keys(this.data) && Object.keys(this.data).length){
                 let props = this.tableProps;
                 props.page = this.page;
                 this.$emit("on-table-props-changed", props);

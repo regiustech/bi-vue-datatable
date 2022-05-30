@@ -37,10 +37,10 @@ export default {
         },
     },
     computed: {
-        getValueByDotNotation() {
+        getValueByDotNotation(){
             let columnData;
             let handle = this.name.split(".");
-            if (handle.length > 1) {
+            if(handle.length > 1){
                 columnData = this.value;
                 handle.forEach(item => {
                     columnData = columnData[item];

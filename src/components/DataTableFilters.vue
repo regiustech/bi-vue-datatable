@@ -1,31 +1,17 @@
 <template>
     <div :class="containerClasses">
         <div :class="firstHalfClasses">
-            <select
-                :class="selectClasses"
-                v-model="tableData.length">
-                <option
-                    :key="index"
-                    :value="records"
-                    v-for="(records, index) in perPage">
-                    {{records}}
-                </option>
+            <select :class="selectClasses" v-model="tableData.length">
+                <option :key="index" :value="records" v-for="(records, index) in perPage">{{records}}</option>
             </select>
         </div>
         <div :class="secondHalfClasses">
-            <input
-                name="table-search"
-                :class="inputClasses"
-                v-model="tableData.search"
-                :placeholder="placeholderSearch">
+            <input name="table-search" :class="inputClasses" v-model="tableData.search" :placeholder="placeholderSearch"/>
         </div>
     </div>
 </template>
-
 <script>
-
 import FrameworkValidator from "@/validators/data-table-framework";
-
 export default {
     props: {
         tableData: {
