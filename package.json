@@ -1,6 +1,6 @@
 {
   "name": "bi-vue-datatable",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Vue.js datatable made with Laravel and Bootstrap in mind",
   "author": "Raman Deep Bajwa <dbajwa763@gmail.com>",
   "homepage": "https://github.com/dbajwa763/bi-vue-datatable",

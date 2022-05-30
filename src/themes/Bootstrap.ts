@@ -4,8 +4,8 @@ export default {
     },
     "table": {
         "table": true,
-        "table-striped": true,
-        "border": true
+        "table-striped": false,
+        "border": false
     },
     "t-head": {},
     "t-body": {},
