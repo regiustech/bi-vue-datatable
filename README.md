@@ -21,9 +21,9 @@ yarn add bi-vue-datatable
 ### Register the Plugin
 
 ```javascript
-import DataTable from 'bi-vue-datatable';
+import BiDataTable from 'bi-vue-datatable';
 
-Vue.use(DataTable);
+Vue.use(BiDataTable);
 ```
 
 ### Basic Example
@@ -31,10 +31,10 @@ Vue.use(DataTable);
 
 
 ```html
-<data-table
+<bi-data-table
     :columns="columns"
     url="http://example.test/example">
-</data-table>
+</bi-data-table>
 ```
 
 ```javascript
@@ -46,16 +46,19 @@ export default {
                     label: 'ID',
                     name: 'id',
                     orderable: true,
+                    searchable: true,
                 },
                 {
                     label: 'Name',
                     name: 'name',
                     orderable: true,
+                    searchable: true,
                 },
                 {
                     label: 'Email',
                     name: 'email',
                     orderable: true,
+                    searchable: true,
                 },
             ]
         }
