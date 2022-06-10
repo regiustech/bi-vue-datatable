@@ -36,6 +36,7 @@
         </div>
         <div class="bi-vue-datatable-search" v-if="column.searchable" style="margin-top:5px;">
             <input type="text" class="bi-vue-search" :name="getName(column.name)" @input="getSearchText(column.name)" style="border:1px solid #ddd;padding:7px 15px;height:35px;border-radius:5px;width:100%;max-width:150px;">
+            <button type="button" :class="getClassName(column.name)" @click="clearSearch(column.name)" v-show="showCloseBtn(column.name)"><svg width="20" height="20" viewBox="0 0 43 43"><rect x="11.5154" y="9.69751" width="30" height="3.42857" transform="rotate(45 11.5154 9.69751)"></rect> <rect x="33.335" y="12.1218" width="30" height="4.28571" transform="rotate(135 33.335 12.1218)"></rect></svg></button>
         </div>
     </th>
 </template>
@@ -71,6 +72,9 @@ export default {
         getName(column){
             return 'search_'+column;
         },
+        getClassName(column){
+            return 'btn search_'+column;
+        },
         headerClasses(column) {
             return MergeClasses(
                 typeof column.columnClasses === "object" && column.columnClasses["!override"] ? {} : this.classes,
@@ -88,7 +92,28 @@ export default {
         },
         getSearchText(column){
             var search = ((document.getElementsByName('search_'+column) && document.getElementsByName('search_'+column).length) ? document.getElementsByName('search_'+column)[0].value : '');
+            this.showCBtn(column);
             this.$emit('search',search,column);
+        },
+        clearSearch(column){
+            if(document.getElementsByName('search_'+column) && document.getElementsByName('search_'+column).length){
+                document.getElementsByName('search_'+column)[0].value = '';
+            }
+            if(document.getElementsByClassName('search_'+column) && document.getElementsByClassName('search_'+column).length){
+                document.getElementsByClassName('search_'+column)[0].style.display = 'none';
+            }
+            this.$emit('search','',column);
+        },
+        showCloseBtn(column){
+            if(document.getElementsByName('search_'+column) && document.getElementsByName('search_'+column).length && document.getElementsByName('search_'+column)[0].value){
+                return true;
+            }
+            return false;
+        },
+        showCBtn(column){
+            if(document.getElementsByClassName('search_'+column) && document.getElementsByClassName('search_'+column).length){
+                document.getElementsByClassName('search_'+column)[0].style.display = 'block';
+            }
         }
     },
 }
