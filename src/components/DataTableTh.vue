@@ -92,7 +92,7 @@ export default {
         },
         getSearchText(column){
             var search = ((document.getElementsByName('search_'+column) && document.getElementsByName('search_'+column).length) ? document.getElementsByName('search_'+column)[0].value : '');
-            this.showCBtn(column);
+            this.showHideBtn(column,search);
             this.$emit('search',search,column);
         },
         clearSearch(column){
@@ -110,9 +110,13 @@ export default {
             }
             return false;
         },
-        showCBtn(column){
+        showHideBtn(column,search){
             if(document.getElementsByClassName('search_'+column) && document.getElementsByClassName('search_'+column).length){
-                document.getElementsByClassName('search_'+column)[0].style.display = 'block';
+                if(search){
+                    document.getElementsByClassName('search_'+column)[0].style.display = 'block';
+                }else{
+                    document.getElementsByClassName('search_'+column)[0].style.display = 'none';
+                }
             }
         }
     },

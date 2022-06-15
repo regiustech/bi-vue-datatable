@@ -111,6 +111,7 @@ export default {
             draw: 0,
             page: 1,
             searchs: [],
+            pageLength: this.perPage[0],
             tableProps: {
                 search: '',
                 dir: this.orderDir,
@@ -145,6 +146,10 @@ export default {
         tableProps: {
             handler: function(){
                 if(this.tableProps.search){
+                    this.page = 1;
+                }
+                if(this.tableProps.length != this.pageLength){
+                    this.pageLength = this.tableProps.length;
                     this.page = 1;
                 }
                 if(this.url){
