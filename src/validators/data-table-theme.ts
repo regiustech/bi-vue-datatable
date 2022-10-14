@@ -1,6 +1,3 @@
 export default (value) => {
-    return [
-        'light',
-        'dark',
-    ].indexOf(value) !== -1;
+    return ['light','dark'].indexOf(value) !== -1;
 };

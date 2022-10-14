@@ -1,6 +1,3 @@
 export default (value) => {
-    return [
-        'asc',
-        'desc',
-    ].indexOf(value) !== -1;
+    return ['asc','desc'].indexOf(value) !== -1;
 };

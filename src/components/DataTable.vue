@@ -1,34 +1,9 @@
 <template>
-    <div
-        :class="getClasses.container">
-        <slot
-            :url="url"
-            name="filters"
-            :per-page="perPage"
-            :table-data="tableData"
-            :meta="tableData.meta"
-            :links="tableData.links"
-            :table-filters="tableProps"
-            :loadDiffrentPage="loadDiffrentPage">
-            <bi-vue-data-table-filters
-                :per-page="perPage"
-                :framework="framework"
-                :table-data="tableProps"
-                :placeholder-search="translate.placeholderSearch">
-            </bi-vue-data-table-filters>
+    <div :class="getClasses.container">
+        <slot :url="url" name="filters" :per-page="perPage" :table-data="tableData" :meta="tableData.meta" :links="tableData.links" :table-filters="tableProps" :loadDiffrentPage="loadDiffrentPage">
+            <bi-vue-data-table-filters :per-page="perPage" :framework="framework" :table-data="tableProps" :placeholder-search="translate.placeholderSearch"></bi-vue-data-table-filters>
         </slot>
-        <bi-vue-table
-            @sort="sortBy"
-            @search="columnSearchText"
-            :sortKey="sortKey"
-            :columns="columns"
-            :dir="tableProps.dir"
-            :sortOrders="sortOrders"
-            :table-classes="getClasses.table"
-            :table-head-classes="getClasses['th']"
-            :table-header-classes="getClasses['t-head']"
-            :table-row-classes="getClasses['t-head-tr']"
-            :table-container-classes="getClasses['table-container']">
+        <bi-vue-table @sort="sortBy" @search="columnSearchText" :sortKey="sortKey" :columns="columns" :dir="tableProps.dir" :sortOrders="sortOrders" :table-classes="getClasses.table" :table-head-classes="getClasses['th']" :table-header-classes="getClasses['t-head']" :table-row-classes="getClasses['t-head-tr']" :table-container-classes="getClasses['table-container']">
             <template slot="header" v-if="headerSlot">
                 <slot name="header" :table-props="tableProps"></slot>
             </template>
@@ -40,47 +15,39 @@
                     <tr v-if="(!tableData || !tableData.data || !tableData.data.length)">
                         <td :colspan="columns.length">No record found.</td>
                     </tr>
-                    <tr 
-                        v-else 
-                        :key="item.id" 
-                        :class="getClasses['t-body-tr']" 
-                        v-for="(item,rowIndex) in tableData.data" 
-                        @click="$emit('row-clicked',item)" 
-                        class="bi-vue-datatable-tbody-tr">
-                        <td 
-                            :key="column.name" 
-                            class="bi-vue-datatable-td" 
-                            :class="bodyCellClasses(column)" 
-                            v-for="(column, columnIndex) in columns">
-                            <bi-vue-data-table-cell
-                                :row="rowIndex"
-                                :column="columnIndex"
-                                :value="item"
-                                :transform="column.transform"
-                                :name="column.name"
-                                :meta="column.meta"
-                                :event="column.event"
-                                :classes="column.classes"
-                                :handler="column.handler"
-                                :comp="column.component">
-                            </bi-vue-data-table-cell>
-                        </td>
-                    </tr>
+                    <template v-else v-for="(item,rowIndex) in tableData.data" :key="item.id">
+                        <tr :key="item.id" :class="getClasses['t-body-tr']" @click="$emit('row-clicked',item)" class="bi-vue-datatable-tbody-tr bi-vue-datatable-tbody-tr-main">
+                            <td :key="column.name" class="bi-vue-datatable-td" :class="bodyCellClasses(column)" v-for="(column,columnIndex) in columns">
+                                <bi-vue-data-table-cell :row="rowIndex" :column="columnIndex" :value="item" :transform="column.transform" :name="column.name" :meta="column.meta" :event="column.event" :classes="column.classes" :handler="column.handler" :comp="column.component"></bi-vue-data-table-cell>
+                            </td>
+                        </tr>
+                        <template v-if="item.childrens && item.childrens.length">
+                            <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id" v-show="tableProps.filters.showChildren == item.id">
+                                <td :colspan="columns.length">
+                                    <table class="bi-vue-datatable table mb-0" style="box-shadow:0 1px 3px 1px rgb(60 64 67 / 15%);border-radius:10px !important;">
+                                        <thead class="bi-vue-datatable-thead">
+                                            <tr class="bi-vue-datatable-thead-tr">
+                                                <bi-vue-data-table-th :column="childColumn" :key="childColumn.name" v-for="childColumn in childColumns"></bi-vue-data-table-th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bi-vue-datatable-tbody">
+                                            <tr :key="children.id" v-for="(children,childRowIndex) in item.childrens" class="bi-vue-datatable-tbody-tr bi-vue-datatable-tbody-tr-child">
+                                                <td :key="childColumn.name" class="bi-vue-datatable-td" v-for="(childColumn,childColumnIndex) in childColumns">
+                                                    <bi-vue-data-table-cell :row="childRowIndex" :column="childColumnIndex" :value="children" :transform="childColumn.transform" :name="childColumn.name" :meta="childColumn.meta" :event="childColumn.event" :classes="childColumn.classes" :handler="childColumn.handler" :comp="childColumn.component"></bi-vue-data-table-cell>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
                 </tbody>
                 <slot name="footer" :table-props="tableProps"></slot>
             </template>
         </bi-vue-table>
         <slot :page="page" name="pagination" :meta="tableData.meta" :links="tableData.links" :loadDiffrentPage="loadDiffrentPage">
-            <tailable-pagination
-                v-if="(tableData && tableData.data && tableData.data.length)"
-                :data="tableData"
-                :showNumbers="true"
-                :framework="framework"
-                :translate="translate"
-                :size="pagination.size"
-                :limit="pagination.limit"
-                @page-changed="paginationChangePage">
-            </tailable-pagination>
+            <tailable-pagination v-if="(tableData && tableData.data && tableData.data.length)" :data="tableData" :showNumbers="true" :framework="framework" :translate="translate" :size="pagination.size" :limit="pagination.limit" @page-changed="paginationChangePage"></tailable-pagination>
         </slot>
     </div>
 </template>
@@ -96,11 +63,13 @@ import BootstrapTableTheme from "../themes/Bootstrap";
 import ThemeValidator from "../validators/data-table-theme";
 import OrderDirValidator from "../validators/data-table-order-dir";
 import FrameworkValidator from "../validators/data-table-framework";
+import BiVueDataTableTh from './DataTableTh';
 export default {
     components: {
         'bi-vue-table': VueTable,
         'bi-vue-data-table-cell': DataTableCell,
         'bi-vue-data-table-filters': DataTableFilters,
+        BiVueDataTableTh,
     },
     data() {
         return {
@@ -173,7 +142,7 @@ export default {
             this.$emit("loading");
             let baseUrl = url.split("?")[0];
             let response = await axios.get(baseUrl,options).catch(errors => {
-                alert(errors);
+                console.log(errors);
             });
             if(response){
                 if(this.checkTableDraw(response.data.payload.draw)){
@@ -236,7 +205,7 @@ export default {
             if(Object.keys(this.data) && Object.keys(this.data).length){
                 let props = this.tableProps;
                 props.page = this.page;
-                this.$emit("on-table-props-changed", props);
+                this.$emit("on-table-props-changed",props);
             }else{
                 this.getData();
             }
@@ -268,6 +237,7 @@ export default {
             payload = Object.assign(payload,this.tableProps.filters);
             payload.draw = this.draw;
             payload.page = this.page;
+            payload.showChildren = null;
             return {
                 params: payload,
                 headers: this.headers,
@@ -289,46 +259,44 @@ export default {
         columns: {
             type: Array,
             default: () => ([]),
-            required: true,
+            required: true
+        },
+        childColumns: {
+            type: Array,
+            default: () => ([]),
+            required: false
         },
         url: {
             type: String,
-            default: "",
+            default: ""
         },
         orderBy: {
             type: String,
-            default: 'id',
+            default: 'id'
         },
         data: {
             type: Object,
-            default: () => ({}),
+            default: () => ({})
         },
         filters: {
             type: Object,
-            default: () => ({}),
+            default: () => ({})
         },
         addFiltersToUrl: {
             type: Boolean,
-            default: false,
+            default: false
         },
         debounceDelay: {
             type: Number,
-            default: 0,
+            default: 0
         },
         pagination: {
             type: Object,
-            default: () => ({
-                limit: 1,
-                align: 'right',
-            }),
+            default: () => ({limit: 1,align: 'right'})
         },
         perPage: {
             type: Array,
-            default: () => ([
-                '10',
-                '25',
-                '50'
-            ]),
+            default: () => (['10','25','50'])
         },
         orderDir: {
             type: String,
@@ -343,11 +311,11 @@ export default {
         theme: {
             type: String,
             default: "light",
-            validator: ThemeValidator,
+            validator: ThemeValidator
         },
         classes: {
             type: Object,
-            default: () => ({}),
+            default: () => ({})
         },
         headers: {
             type: Object,
@@ -359,7 +327,7 @@ export default {
                 nextButton: 'Next',
                 previousButton: 'Previous',
                 placeholderSearch: 'Search Table',
-            }, (window.BiVueDatatable || {}).translate || {})
+            },(window.BiVueDatatable || {}).translate || {})
         }
     }
 }
