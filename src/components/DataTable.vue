@@ -41,6 +41,11 @@
                                 </td>
                             </tr>
                         </template>
+                        <template v-if="eChildData && item.childrens && !item.childrens.length">
+                            <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id" v-show="tableProps.filters.showChildren == item.id">
+                                <td :colspan="columns.length">No images found for this Tag Number</td>
+                            </tr>
+                        </template>
                     </template>
                 </tbody>
                 <slot name="footer" :table-props="tableProps"></slot>
@@ -71,7 +76,7 @@ export default {
         'bi-vue-data-table-filters': DataTableFilters,
         BiVueDataTableTh,
     },
-    data() {
+    data(){
         return {
             debounceGetData: () => {},
             tableData: {},
@@ -265,6 +270,10 @@ export default {
             type: Array,
             default: () => ([]),
             required: false
+        },
+        eChildData: {
+            type: Boolean,
+            default: false
         },
         url: {
             type: String,
