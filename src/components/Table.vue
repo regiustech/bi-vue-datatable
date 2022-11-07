@@ -1,19 +1,10 @@
 <template>
-    <div :class="tableContainerClasses">
-        <table :class="tableClasses" class="bi-vue-datatable">
+    <div class="bi-vue-datatable-wrap">
+        <table class="bi-vue-datatable table">
             <slot name="header">
-                <thead :class="tableHeaderClasses" class="bi-vue-datatable-thead">
-                    <tr :class="tableRowClasses" class="bi-vue-datatable-thead-tr">
-                        <bi-vue-data-table-th
-                            :dir="dir"
-                            @sort="sort"
-                            @search="columnSearchText"
-                            :column="column"
-                            :key="column.name"
-                            v-for="column in columns"
-                            :classes="tableHeadClasses"
-                            :current-sort-column="currentSortColumn">
-                        </bi-vue-data-table-th>
+                <thead class="bi-vue-datatable-thead">
+                    <tr class="bi-vue-datatable-thead-tr">
+                        <bi-vue-data-table-th :dir="dir" @sort="sort" @search="columnSearchText" :column="column" :key="column.name" v-for="column in columns" :current-sort-column="currentSortColumn"></bi-vue-data-table-th>
                     </tr>
                 </thead>
             </slot>
@@ -23,11 +14,10 @@
 </template>
 <script>
 import BiVueDataTableTh from './DataTableTh';
-import MergeClasses from "../functions/MergeClasses";
 export default {
     data() {
         return {
-            currentSortColumn: '',
+            currentSortColumn: ''
         };
     },
     components: {
@@ -36,45 +26,15 @@ export default {
     props: {
         dir: {
             type: String,
-            default: '',
+            default: ''
         },  
         columns: {
             type: Array,
             default: () => ([]),
-            required: true,
-        },
-        tableClasses: {
-            type: Object,
-            default: () => ({}),
-        },
-        tableHeaderClasses: {
-            type: Object,
-            default: () => ({
-                'p-3': true,
-                'text-left': true,
-            }),
-        },
-        tableRowClasses: {
-            type: Object,
-            default: () => ({}),
-        },
-        tableContainerClasses: {
-            type: Object,
-            default: () => ({}),
-        },
-        tableHeadClasses: {
-            type: Object,
-            default: () => ({}),
+            required: true
         },
     },
     methods: {
-        headerClasses(column){
-            return MergeClasses(
-                this.tableHeadClasses,
-                {"table-header-sorting": column.orderable},
-                (column.columnClasses || {}).thead || {}
-            );
-        },
         sort(column){
             this.currentSortColumn = column.name;
             this.$emit('sort', column.name, column.columnName);

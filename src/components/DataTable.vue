@@ -1,58 +1,60 @@
 <template>
-    <div :class="getClasses.container">
-        <slot :url="url" name="filters" :per-page="perPage" :table-data="tableData" :meta="tableData.meta" :links="tableData.links" :table-filters="tableProps" :loadDiffrentPage="loadDiffrentPage">
-            <bi-vue-data-table-filters :per-page="perPage" :framework="framework" :table-data="tableProps" :placeholder-search="translate.placeholderSearch"></bi-vue-data-table-filters>
-        </slot>
-        <bi-vue-table @sort="sortBy" @search="columnSearchText" :sortKey="sortKey" :columns="columns" :dir="tableProps.dir" :sortOrders="sortOrders" :table-classes="getClasses.table" :table-head-classes="getClasses['th']" :table-header-classes="getClasses['t-head']" :table-row-classes="getClasses['t-head-tr']" :table-container-classes="getClasses['table-container']">
-            <template slot="header" v-if="headerSlot">
-                <slot name="header" :table-props="tableProps"></slot>
-            </template>
-            <template slot="body" v-if="bodySlot">
-                <slot name="body" :data="tableData.data"></slot>
-            </template>
-            <template slot="body" v-else>
-                <tbody v-if="columns" :class="getClasses['t-body']" class="bi-vue-datatable-tbody">
-                    <tr v-if="(!tableData || !tableData.data || !tableData.data.length)">
-                        <td :colspan="columns.length">No record found.</td>
-                    </tr>
-                    <template v-else v-for="(item,rowIndex) in tableData.data" :key="item.id">
-                        <tr :key="item.id" :class="getClasses['t-body-tr']" @click="$emit('row-clicked',item)" class="bi-vue-datatable-tbody-tr bi-vue-datatable-tbody-tr-main">
-                            <td :key="column.name" class="bi-vue-datatable-td" :class="bodyCellClasses(column)" v-for="(column,columnIndex) in columns">
-                                <bi-vue-data-table-cell :row="rowIndex" :column="columnIndex" :value="item" :transform="column.transform" :name="column.name" :meta="column.meta" :event="column.event" :classes="column.classes" :handler="column.handler" :comp="column.component"></bi-vue-data-table-cell>
-                            </td>
+    <div>
+        <div class="table-responsive">
+            <slot :url="url" name="filters" :per-page="perPage" :table-data="tableData" :meta="tableData.meta" :links="tableData.links" :table-filters="tableProps" :loadDiffrentPage="loadDiffrentPage">
+                <bi-vue-data-table-filters :per-page="perPage" :table-data="tableProps" :placeholder-search="translate.placeholderSearch"></bi-vue-data-table-filters>
+            </slot>
+            <bi-vue-table @sort="sortBy" @search="columnSearchText" :sortKey="sortKey" :columns="columns" :dir="tableProps.dir" :sortOrders="sortOrders">
+                <template slot="header" v-if="headerSlot">
+                    <slot name="header" :table-props="tableProps"></slot>
+                </template>
+                <template slot="body" v-if="bodySlot">
+                    <slot name="body" :data="tableData.data"></slot>
+                </template>
+                <template slot="body" v-else>
+                    <tbody v-if="columns" class="bi-vue-datatable-tbody">
+                        <tr v-if="(!tableData || !tableData.data || !tableData.data.length)">
+                            <td :colspan="columns.length">No record found.</td>
                         </tr>
-                        <template v-if="item.childrens && item.childrens.length">
-                            <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id" v-show="tableProps.filters.showChildren == item.id">
-                                <td :colspan="columns.length">
-                                    <table class="bi-vue-datatable table mb-0" style="box-shadow:0 1px 3px 1px rgb(60 64 67 / 15%);border-radius:10px !important;">
-                                        <thead class="bi-vue-datatable-thead">
-                                            <tr class="bi-vue-datatable-thead-tr">
-                                                <bi-vue-data-table-th :column="childColumn" :key="childColumn.name" v-for="childColumn in childColumns"></bi-vue-data-table-th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="bi-vue-datatable-tbody">
-                                            <tr :key="children.id" v-for="(children,childRowIndex) in item.childrens" class="bi-vue-datatable-tbody-tr bi-vue-datatable-tbody-tr-child">
-                                                <td :key="childColumn.name" class="bi-vue-datatable-td" v-for="(childColumn,childColumnIndex) in childColumns">
-                                                    <bi-vue-data-table-cell :row="childRowIndex" :column="childColumnIndex" :value="children" :transform="childColumn.transform" :name="childColumn.name" :meta="childColumn.meta" :event="childColumn.event" :classes="childColumn.classes" :handler="childColumn.handler" :comp="childColumn.component"></bi-vue-data-table-cell>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                        <template v-else v-for="(item,rowIndex) in tableData.data" :key="item.id">
+                            <tr :key="item.id" @click="$emit('row-clicked',item)" class="bi-vue-datatable-tbody-tr bi-vue-datatable-tbody-tr-main">
+                                <td :key="column.name" class="bi-vue-datatable-td" v-for="(column,columnIndex) in columns">
+                                    <bi-vue-data-table-cell :row="rowIndex" :column="columnIndex" :value="item" :transform="column.transform" :name="column.name" :meta="column.meta" :event="column.event" :classes="column.classes" :handler="column.handler" :comp="column.component"></bi-vue-data-table-cell>
                                 </td>
                             </tr>
+                            <template v-if="item.childrens && item.childrens.length">
+                                <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id" v-show="tableProps.filters.showChildren == item.id">
+                                    <td :colspan="columns.length">
+                                        <table class="bi-vue-datatable table mb-0" style="box-shadow:0 1px 3px 1px rgb(60 64 67 / 15%);border-radius:10px !important;">
+                                            <thead class="bi-vue-datatable-thead">
+                                                <tr class="bi-vue-datatable-thead-tr">
+                                                    <bi-vue-data-table-th :column="childColumn" :key="childColumn.name" v-for="childColumn in childColumns"></bi-vue-data-table-th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bi-vue-datatable-tbody">
+                                                <tr :key="children.id" v-for="(children,childRowIndex) in item.childrens" class="bi-vue-datatable-tbody-tr bi-vue-datatable-tbody-tr-child">
+                                                    <td :key="childColumn.name" class="bi-vue-datatable-td" v-for="(childColumn,childColumnIndex) in childColumns">
+                                                        <bi-vue-data-table-cell :row="childRowIndex" :column="childColumnIndex" :value="children" :transform="childColumn.transform" :name="childColumn.name" :meta="childColumn.meta" :event="childColumn.event" :classes="childColumn.classes" :handler="childColumn.handler" :comp="childColumn.component"></bi-vue-data-table-cell>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </template>
+                            <template v-if="eChildData && item.childrens && !item.childrens.length">
+                                <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id" v-show="tableProps.filters.showChildren == item.id">
+                                    <td :colspan="columns.length">No images found for this Tag Number</td>
+                                </tr>
+                            </template>
                         </template>
-                        <template v-if="eChildData && item.childrens && !item.childrens.length">
-                            <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id" v-show="tableProps.filters.showChildren == item.id">
-                                <td :colspan="columns.length">No images found for this Tag Number</td>
-                            </tr>
-                        </template>
-                    </template>
-                </tbody>
-                <slot name="footer" :table-props="tableProps"></slot>
-            </template>
-        </bi-vue-table>
+                    </tbody>
+                    <slot name="footer" :table-props="tableProps"></slot>
+                </template>
+            </bi-vue-table>
+        </div>
         <slot :page="page" name="pagination" :meta="tableData.meta" :links="tableData.links" :loadDiffrentPage="loadDiffrentPage">
-            <tailable-pagination v-if="(tableData && tableData.data && tableData.data.length)" :data="tableData" :showNumbers="true" :framework="framework" :translate="translate" :size="pagination.size" :limit="pagination.limit" @page-changed="paginationChangePage"></tailable-pagination>
+            <bi-pagination v-if="(tableData && tableData.data && tableData.data.length)" :data="tableData" :showNumbers="true" :translate="translate" :limit="pagination.limit" @page-changed="paginationChangePage"></bi-pagination>
         </slot>
     </div>
 </template>
@@ -62,19 +64,17 @@ import VueTable from './Table';
 import DataTableCell from './DataTableCell';
 import UrlFilters from '../mixins/UrlFilters';
 import DataTableFilters from './DataTableFilters';
-import TailwindTableTheme from "../themes/Tailwind";
-import MergeClasses from "../functions/MergeClasses";
-import BootstrapTableTheme from "../themes/Bootstrap";
 import ThemeValidator from "../validators/data-table-theme";
 import OrderDirValidator from "../validators/data-table-order-dir";
-import FrameworkValidator from "../validators/data-table-framework";
 import BiVueDataTableTh from './DataTableTh';
+import BiPagination from './BiPagination';
 export default {
     components: {
         'bi-vue-table': VueTable,
         'bi-vue-data-table-cell': DataTableCell,
         'bi-vue-data-table-filters': DataTableFilters,
         BiVueDataTableTh,
+        BiPagination
     },
     data(){
         return {
@@ -214,12 +214,6 @@ export default {
             }else{
                 this.getData();
             }
-        },
-        bodyCellClasses(column){
-            return MergeClasses(
-                typeof column.columnClasses === "object" && column.columnClasses["!override"] ? {} : this.getClasses.td,
-                column.columnClasses || {}, (column.columnClasses || {}).td || {}
-            );
         }
     },
     computed: {
@@ -247,17 +241,6 @@ export default {
                 params: payload,
                 headers: this.headers,
             };
-        },
-        getClasses(){
-            const defaults = require("lodash.defaultsdeep");
-            if(this.framework === "tailwind"){
-                return defaults(this.classes,(window.BiVueDatatable || {}).classes || {},TailwindTableTheme); 
-            }
-            let bootstrapTheme = BootstrapTableTheme;
-            if(this.theme === "dark"){
-                bootstrapTheme.table["table-dark"] = true;
-            }
-            return defaults(this.classes, (window.BiVueDatatable || {}).classes || {}, bootstrapTheme); 
         }
     },
     props: {
@@ -311,11 +294,6 @@ export default {
             type: String,
             default: "asc",
             validator: OrderDirValidator
-        },
-        framework: {
-            type: String,
-            default: "bootstrap",
-            validator: FrameworkValidator
         },
         theme: {
             type: String,
