@@ -92,6 +92,7 @@ export default {
             draw: 0,
             page: 1,
             searchs: [],
+            preFilters: null,
             pageLength: this.perPage[0],
             tableProps: {
                 search: '',
@@ -102,7 +103,7 @@ export default {
             }
         };
     },
-    created() {
+    created(){
         if(this.addFiltersToUrl){
             this.checkParameters(this.tableProps);
         }else if(this.url){
@@ -111,7 +112,7 @@ export default {
         const debounce = require('lodash.debounce');
         this.debounceGetData = debounce(this.getData,this.debounceDelay ? this.debounceDelay : 0);
     },
-    mounted() {
+    mounted(){
         this.columns.forEach((column) => {
            this.sortOrders[column.name] = -1;
         });
@@ -126,6 +127,27 @@ export default {
         },
         tableProps: {
             handler: function(){
+                let changeFilter = false;
+                const filters = Object.assign({},this.tableProps.filters);
+                for(var key in filters){
+                    if(key == "custsearch"){
+                        if(!this.preFilters || filters["custsearch"] !== this.preFilters["custsearch"]){
+                            changeFilter = true;
+                        }
+                    }else if(key == "date_range"){
+                        if(!this.preFilters || filters["date_range"] !== this.preFilters["date_range"]){
+                            changeFilter = true;
+                        }
+                    }else{
+                        if(!this.preFilters || JSON.stringify(filters[key]) !== JSON.stringify(this.preFilters[key])){
+                            changeFilter = true;
+                        }
+                    }
+                }
+                if(changeFilter){
+                    this.preFilters = filters;
+                    this.page = 1;
+                }
                 if(this.tableProps.search){
                     this.page = 1;
                 }
