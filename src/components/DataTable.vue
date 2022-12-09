@@ -91,6 +91,7 @@ export default {
             isLoading: false,
             draw: 0,
             page: 1,
+            prevOptions: null,
             searchs: [],
             preFilters: null,
             pageLength: this.perPage[0],
@@ -160,7 +161,7 @@ export default {
                 }else{
                     let props = this.tableProps;
                     props.page = this.page;
-                    this.$emit("on-table-props-changed", props);
+                    this.$emit("on-table-props-changed",props);
                 }
             },
             deep: true
@@ -175,17 +176,19 @@ export default {
         async getData(url = this.url,options = this.getRequestPayload){
             this.$emit("loading");
             this.isLoading = true;
+            this.prevOptions = options;
             let baseUrl = url.split("?")[0];
             let response = await axios.get(baseUrl,options).catch(errors => {
                 console.log(errors);
             });
             if(response){
-                if(this.checkTableDraw(response.data.payload.draw)){
+                if(this.prevOptions == options){
                     this.draw++;
                     this.tableData = response.data;
                     if(this.addFiltersToUrl){
                         this.updateParameters(this.tableProps);
                     }
+                    document.querySelector(".bi-vue-datatable-wrap").scrollTo(0,0);
                     this.$emit("finished-loading");
                     this.isLoading = false;
                 }
