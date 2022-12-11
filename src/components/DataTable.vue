@@ -95,6 +95,7 @@ export default {
             searchs: [],
             preFilters: null,
             pageLength: this.perPage[0],
+            scrollToLeft: false,
             tableProps: {
                 search: '',
                 dir: this.orderDir,
@@ -146,8 +147,11 @@ export default {
                     }
                 }
                 if(changeFilter){
+                    this.scrollToLeft = true;
                     this.preFilters = filters;
                     this.page = 1;
+                }else{
+                    this.scrollToLeft = false;
                 }
                 if(this.tableProps.search){
                     this.page = 1;
@@ -188,7 +192,10 @@ export default {
                     if(this.addFiltersToUrl){
                         this.updateParameters(this.tableProps);
                     }
-                    document.querySelector(".bi-vue-datatable-wrap").scrollTo(0,0);
+                    if(this.scrollToLeft){
+                        document.querySelector(".bi-vue-datatable-wrap").scrollTo(0,0);
+                        this.scrollToLeft = false;
+                    }
                     this.$emit("finished-loading");
                     this.isLoading = false;
                 }
