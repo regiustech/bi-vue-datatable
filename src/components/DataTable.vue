@@ -28,8 +28,8 @@
                                     <bi-vue-data-table-cell :row="rowIndex" :column="columnIndex" :value="item" :transform="column.transform" :name="column.name" :meta="column.meta" :event="column.event" :classes="column.classes" :handler="column.handler" :comp="column.component"></bi-vue-data-table-cell>
                                 </td>
                             </tr>
-                            <template v-if="item.childrens && item.childrens.length">
-                                <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id" v-show="tableProps.filters.showChildren == item.id">
+                            <template v-if="item.childrens && item.childrens.length && tableProps.filters.showChildren == item.id">
+                                <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id">
                                     <td :colspan="columns.length">
                                         <table class="bi-vue-datatable table mb-0" style="box-shadow:0 1px 3px 1px rgb(60 64 67 / 15%);border-radius:10px !important;">
                                             <thead class="bi-vue-datatable-thead">
@@ -48,8 +48,8 @@
                                     </td>
                                 </tr>
                             </template>
-                            <template v-if="eChildData && item.childrens && !item.childrens.length">
-                                <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id" v-show="tableProps.filters.showChildren == item.id">
+                            <template v-if="eChildData && item.childrens && !item.childrens.length && tableProps.filters.showChildren == item.id">
+                                <tr :key="'children-'+item.id" :class="'bi-vue-datatable-tbody-tr children-'+item.id">
                                     <td :colspan="columns.length">No images found for this Tag Number</td>
                                 </tr>
                             </template>
