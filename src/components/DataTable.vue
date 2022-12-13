@@ -131,6 +131,7 @@ export default {
             handler: function(){
                 let changeFilter = false;
                 const filters = Object.assign({},this.tableProps.filters);
+                let hasShowChild = false;
                 for(var key in filters){
                     if(key == "custsearch"){
                         if(!this.preFilters || filters["custsearch"] !== this.preFilters["custsearch"]){
@@ -140,13 +141,16 @@ export default {
                         if(!this.preFilters || filters["date_range"] !== this.preFilters["date_range"]){
                             changeFilter = true;
                         }
+                    }else if(key == "showChildren"){
+                        changeFilter = false;
+                        hasShowChild = true;
                     }else{
                         if(!this.preFilters || JSON.stringify(filters[key]) !== JSON.stringify(this.preFilters[key])){
                             changeFilter = true;
                         }
                     }
                 }
-                if(changeFilter){
+                if(changeFilter && !hasShowChild){
                     this.scrollToLeft = true;
                     this.preFilters = filters;
                     this.page = 1;
